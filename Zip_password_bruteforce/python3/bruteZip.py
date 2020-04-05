@@ -1,40 +1,59 @@
 #!/usr/bin/env python
 
+import sys
 import optparse
 import zipfile
+from threading import Thread
 
 class zipExtractor:
-    
-    def __init__(self, zipFileName, wordListName):
-        self.zipFileName = zipFileName
-        print(f'[+] Reading Zip File {zipFileName} ')
-        self.wordListName = wordListName
-        print(f'[+] Reading dictionary File {wordListName} ')
-
-
+    found = False
     def extractFile(self, zipFile, password):
         try:
             password = bytes(password, encoding= "ascii")
             zipFile.extractall(pwd=password)
-            return True
+            password = str(password, encoding = "utf-8")
+            print (f"[+] Password Found : {password}")
+            self.found = True
+            return self.found
         except Exception  :
             pass
         return False
-    
+
+    def printProgressBar (self, iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '#', printEnd = "\r"):
+        """
+        Call in a loop to create terminal progress bar
+        @params:
+            iteration   - Required  : current iteration (Int)
+            total       - Required  : total iterations (Int)
+            prefix      - Optional  : prefix string (Str)
+            suffix      - Optional  : suffix string (Str)
+            decimals    - Optional  : positive number of decimals in percent complete (Int)
+            length      - Optional  : character length of bar (Int)
+            fill        - Optional  : bar fill character (Str)
+            printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+        """
+        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+        filledLength = int(length * iteration // total)
+        bar = fill * filledLength + '-' * (length - filledLength)
+        print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
+        # Print New Line on Complete
+        if iteration == total: 
+            print()
+
     def bruteForce(self):
         zipFile = zipfile.ZipFile(self.zipFileName)
-        with open(self.wordListName ) as list:
-            lst = list.readlines()
-            for words in lst:
-                password = words.strip('\n')
-                secret = self.extractFile(zipFile = zipFile, password = password)
-                if secret == True:
-                    print (f"[+] Password Found : {password}")
+        with open(self.wordListName,'r',2_000_000 ) as file:
+            while(file.readline()):
+                password = file.readline().strip('\n')
+                thread = Thread(target = self.extractFile, args= (zipFile, password) )
+                thread.start()
+                thread.join()
+                # secret = self.extractFile(zipFile = zipFile, password = password)
+                if self.found == True:
                     return
-        print ("[-] No Matching password found in provided dictionary.")
-        return
+        if self.found == False:
+            print ("[-] No Matching password found in provided dictionary.")
 
-class main:
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
         parser.add_option('-f','--file', dest = "zipFileName", type = "string", help = "specify Zip File")
@@ -44,13 +63,15 @@ class main:
             print (parser.usage)
             exit(0)
         else:
-            zipFileName = options.zipFileName
-            wordListName = options.wordListName
-        zipExtract = zipExtractor(zipFileName = zipFileName, wordListName = wordListName) 
-        return zipExtract.bruteForce()
+            self.zipFileName = options.zipFileName
+            self.wordListName = options.wordListName
+
+        print(f'[+] Reading Zip File {self.zipFileName} ')
+        print(f'[+] Reading dictionary File {self.wordListName} ')
+        return self.bruteForce()
         
 
 if __name__ == "__main__":
-    run = main()
+    run = zipExtractor()
     run.zipBruteForce()
                 

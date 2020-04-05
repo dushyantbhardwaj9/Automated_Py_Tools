@@ -5,12 +5,6 @@ import zipfile
 
 class zipExtractor:
     
-    def __init__(self, zipFileName, wordListName):
-        self.zipFileName = zipFileName
-        print(f'[+] Reading Zip File {zipFileName} ')
-        self.wordListName = wordListName
-        print(f'[+] Reading dictionary File {wordListName} ')
-
     def extractFile(self, zipFile, password):
         try:
             zipFile.extractall(pwd=password)
@@ -25,12 +19,11 @@ class zipExtractor:
                 password = words.strip('\n')
                 secret = self.extractFile(zipFile = zipFile, password = password)
                 if secret:    
-                    print (f"[+] Password Found : {password}")
+                    print ("[+] Password Found : {} ".format(password) )
                     return 
         print ("[-] No Matching password found in provided dictionary.")
         return 
 
-class main:
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
         parser.add_option('-f','--file', dest = "zipFileName", type = "string", help = "specify Zip File")
@@ -40,14 +33,15 @@ class main:
             print (parser.usage)
             exit(0)
         else:
-            zipFileName = options.zipFileName
-            wordListName = options.wordListName
-        zipExtract = zipExtractor(zipFileName = zipFileName, wordListName = wordListName) 
-        return zipExtract.bruteForce()
+            self.zipFileName = options.zipFileName
+            self.wordListName = options.wordListName
+        print('[+] Reading Zip File {}'.format(self.zipFileName) )
+        print('[+] Reading dictionary File {}'.format(self.wordListName) )
+        return self.bruteForce()
         
 
 if __name__ == "__main__":
-    run = main()
+    run = zipExtractor()
     run.zipBruteForce()
 
                 
