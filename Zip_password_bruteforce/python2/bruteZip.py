@@ -4,11 +4,14 @@ import optparse
 import zipfile
 
 class zipExtractor:
-    
+
+    found = False    
     def extractFile(self, zipFile, password):
         try:
             zipFile.extractall(pwd=password)
-            return True
+            print ("[+] Password Found : {} ".format(password) )
+            self.found = True
+            return self.found
         except Exception :
             pass
     
@@ -19,10 +22,10 @@ class zipExtractor:
                 password = words.strip('\n')
                 secret = self.extractFile(zipFile = zipFile, password = password)
                 if secret:    
-                    print ("[+] Password Found : {} ".format(password) )
                     return 
-        print ("[-] No Matching password found in provided dictionary.")
-        return 
+        if self.found == False:
+            print("[-] No Matching password found in provided dictionary.")
+            return 
 
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
