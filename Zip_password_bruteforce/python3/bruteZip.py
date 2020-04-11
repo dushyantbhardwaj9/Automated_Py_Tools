@@ -4,6 +4,7 @@ import sys
 import optparse
 import zipfile
 from threading import Thread
+import datetime
 
 class zipExtractor:
     found = False
@@ -20,18 +21,6 @@ class zipExtractor:
         return False
 
     def printProgressBar (self, iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '#', printEnd = "\r"):
-        """
-        Call in a loop to create terminal progress bar
-        @params:
-            iteration   - Required  : current iteration (Int)
-            total       - Required  : total iterations (Int)
-            prefix      - Optional  : prefix string (Str)
-            suffix      - Optional  : suffix string (Str)
-            decimals    - Optional  : positive number of decimals in percent complete (Int)
-            length      - Optional  : character length of bar (Int)
-            fill        - Optional  : bar fill character (Str)
-            printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-        """
         percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
         filledLength = int(length * iteration // total)
         bar = fill * filledLength + '-' * (length - filledLength)
@@ -48,12 +37,9 @@ class zipExtractor:
                 thread = Thread(target = self.extractFile, args= (zipFile, password) )
                 thread.start()
                 thread.join()
-                # secret = self.extractFile(zipFile = zipFile, password = password)
                 if self.found == True:
                     return
-        if self.found == False:
-            print ("[-] No Matching password found in provided dictionary.")
-
+        
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
         parser.add_option('-f','--file', dest = "zipFileName", type = "string", help = "specify Zip File")
@@ -74,4 +60,5 @@ class zipExtractor:
 if __name__ == "__main__":
     run = zipExtractor()
     run.zipBruteForce()
-                
+    if run.found == False:
+        print ("[-] No Matching password found in provided dictionary.")

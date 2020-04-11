@@ -2,6 +2,7 @@
 
 import optparse
 import zipfile
+from threading import Thread
 
 class zipExtractor:
 
@@ -20,8 +21,10 @@ class zipExtractor:
         with open(self.wordListName ) as list:
             for words in list.readlines():
                 password = words.strip('\n')
-                secret = self.extractFile(zipFile = zipFile, password = password)
-                if secret:    
+                thread = Thread(target = self.extractFile, args= (zipFile, password) )
+                thread.start()
+                thread.join()
+                if self.found:    
                     return 
         if self.found == False:
             print("[-] No Matching password found in provided dictionary.")
