@@ -20,15 +20,6 @@ class zipExtractor:
             pass
         return False
 
-    def printProgressBar (self, iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '#', printEnd = "\r"):
-        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-        filledLength = int(length * iteration // total)
-        bar = fill * filledLength + '-' * (length - filledLength)
-        print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
-        # Print New Line on Complete
-        if iteration == total: 
-            print()
-
     def bruteForce(self):
         zipFile = zipfile.ZipFile(self.zipFileName)
         with open(self.wordListName,'r',2_000_000 ) as file:
@@ -39,6 +30,9 @@ class zipExtractor:
                 thread.join()
                 if self.found == True:
                     return
+            else:
+                print("[-] No Matching password found in provided dictionary.")
+                return
         
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
@@ -59,6 +53,4 @@ class zipExtractor:
 
 if __name__ == "__main__":
     run = zipExtractor()
-    run.zipBruteForce()
-    if run.found == False:
-        print ("[-] No Matching password found in provided dictionary.")
+    run.zipBruteForce()       

@@ -26,9 +26,9 @@ class zipExtractor:
                 thread.join()
                 if self.found:    
                     return 
-        if self.found == False:
-            print("[-] No Matching password found in provided dictionary.")
-            return 
+            else:
+                print("[-] No Matching password found in provided dictionary.")
+                return 
 
     def zipBruteForce(self):
         parser = optparse.OptionParser("%prog " + " -f <zipFile> -d <dictionary>")
@@ -41,6 +41,7 @@ class zipExtractor:
         else:
             self.zipFileName = options.zipFileName
             self.wordListName = options.wordListName
+        
         print('[+] Reading Zip File {}'.format(self.zipFileName) )
         print('[+] Reading dictionary File {}'.format(self.wordListName) )
         return self.bruteForce()
