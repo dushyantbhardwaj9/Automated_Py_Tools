@@ -24,13 +24,14 @@ class zip_extractor:
         return False
 
 class init_brute_force(zip_extractor):
-    def __init__(self):
-        pass
+    def __init__(self, zip_file_name, word_list_name):
+        self.zip_file_name, = zip_file_name
+        self.word_list_name = word_list_name
 
-    def brute_force(self, zip_file_name, word_list_name):
-        zipFile = zipfile.ZipFile(zip_file_name)
+    def brute_force(self):
+        zipFile = zipfile.ZipFile(self.zip_file_name)
 
-        with open(word_list_name,'r',2_000_000 ) as file:
+        with open(self.word_list_name,'r',2_000_000 ) as file:
             while(file.readline()):
                 password = file.readline().strip('\n')
                 thread = Thread(target = self.extract_file, args= (zipFile,password, ) )
@@ -72,18 +73,10 @@ class brute_zip:
         parsed_input = input_parser()
         zip_file_name, word_list_name = parsed_input.zip_brute_force()
 
-        init_brute = init_brute_force()
-        init_brute.brute_force(zip_file_name, word_list_name)
+        init_brute = init_brute_force(zip_file_name, word_list_name)
+        init_brute.brute_force()
 
 
 if __name__ == "__main__":
     obj = brute_zip()
-    obj.run()       
-
-
-"""
-----------------------------------------------------------------------------------------------------------------------------
-flow goes like
-command line input for zip file name and dictionary
-input -> init_burte -> extract_file -> result
-"""
+    obj.run()
