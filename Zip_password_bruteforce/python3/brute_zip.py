@@ -49,8 +49,8 @@ class input_parser:
 
     def zip_brute_force(self):
         parser = optparse.OptionParser("%prog -f <zipFile> -d <dictionary>")
-        parser.add_option('-f','--file', dest = "zip_file_name", type = "string", help = "specify Zip File")
-        parser.add_option('-d','--dictionary', dest = "word_list_name", type = "string", help = "specify wordlst file")
+        parser.add_option('-f','--file', dest = "zip_file_path", type = "string", help = "specify Zip File path")
+        parser.add_option('-d','--dictionary', dest = "word_list_path", type = "string", help = "specify wordlist file path")
         options, args = parser.parse_args()
         del args
         if options.zip_file_name == None or options.word_list_name == None :
