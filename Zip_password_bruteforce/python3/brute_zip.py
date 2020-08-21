@@ -42,7 +42,11 @@ class init_brute_force(zip_extractor):
             else:
                 print("[-] No Matching password found in provided dictionary.")
                 return
-
+# Change Inputs from OptParse to ArgParse
+# Add a description of program
+# Add a epilogue and state som examples in that
+# Change function Names to something meaningful
+# Refactor the Program to look pretty
 class input_parser:
     def __init__(self):
         pass
